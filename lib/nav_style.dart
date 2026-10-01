@@ -137,6 +137,8 @@ class GlassBottomNavStyle {
   final double backdropSaturation;
 
   final Color accent;
+  final Color inactiveIconColor;
+  final bool showLabels;
   final double height;
   final double radius;
   final EdgeInsets barPadding;
@@ -174,6 +176,8 @@ class GlassBottomNavStyle {
     this.pillFrostOpacity = 0.09,
     this.backdropSaturation = 1.0,
     this.accent = const Color(0xFFFF2D55),
+    this.inactiveIconColor = const Color(0xE6151B18),
+    this.showLabels = true,
     this.height = 68,
     this.radius = 26,
     this.barPadding = const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -210,6 +214,8 @@ class GlassBottomNavStyle {
     double? pillFrostOpacity,
     double? backdropSaturation,
     Color? accent,
+    Color? inactiveIconColor,
+    bool? showLabels,
     double? height,
     double? radius,
     EdgeInsets? barPadding,
@@ -245,6 +251,8 @@ class GlassBottomNavStyle {
       pillFrostOpacity: pillFrostOpacity ?? this.pillFrostOpacity,
       backdropSaturation: backdropSaturation ?? this.backdropSaturation,
       accent: accent ?? this.accent,
+      inactiveIconColor: inactiveIconColor ?? this.inactiveIconColor,
+      showLabels: showLabels ?? this.showLabels,
       height: height ?? this.height,
       radius: radius ?? this.radius,
       barPadding: barPadding ?? this.barPadding,
@@ -417,6 +425,8 @@ class _GlassBottomBarState extends State<GlassBottomBar>
                 currentIndex: widget.currentIndex,
                 onTap: widget.onTap,
                 accent: style.accent,
+                inactiveIconColor: style.inactiveIconColor,
+                showLabels: style.showLabels,
                 controller: _controller,
                 selectedWidthFactor: style.selectedWidthFactor,
                 selectedSideInsetPx: style.selectedSideInsetPx,
@@ -721,6 +731,8 @@ class _BarContent extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
   final Color accent;
+  final Color inactiveIconColor;
+  final bool showLabels;
   final AnimationController controller;
   final double selectedWidthFactor;
   final double selectedSideInsetPx;
@@ -744,6 +756,8 @@ class _BarContent extends StatelessWidget {
     required this.currentIndex,
     required this.onTap,
     required this.accent,
+    required this.inactiveIconColor,
+    required this.showLabels,
     required this.controller,
     required this.selectedWidthFactor,
     required this.selectedSideInsetPx,
@@ -839,7 +853,7 @@ class _BarContent extends StatelessWidget {
                       curve: Curves.easeOutCubic,
                       builder: (context, t, child) {
                         final iconColor = Color.lerp(
-                          const Color(0xE6151B18),
+                          inactiveIconColor,
                           accent,
                           t,
                         )!;
@@ -868,29 +882,31 @@ class _BarContent extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 4),
-                              Flexible(
-                                child: Text(
-                                  items[i].label,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 0.1,
-                                    color: labelColor,
-                                    shadows: [
-                                      Shadow(
-                                        color: Colors.white.withValues(
-                                          alpha: 0.08 + (0.10 * t),
+                              if (showLabels) ...[
+                                const SizedBox(height: 4),
+                                Flexible(
+                                  child: Text(
+                                    items[i].label,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.1,
+                                      color: labelColor,
+                                      shadows: [
+                                        Shadow(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.08 + (0.10 * t),
+                                          ),
+                                          blurRadius: 7,
+                                          offset: const Offset(0, 1),
                                         ),
-                                        blurRadius: 7,
-                                        offset: const Offset(0, 1),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
+                              ],
                             ],
                           ),
                         );
